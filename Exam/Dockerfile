@@ -29,11 +29,10 @@ RUN cp -r client/build/* server/public/
 # ---------------------------
 # 4️⃣ Expose both ports
 # ---------------------------
-EXPOSE 3000   # Frontend build (static files)
-EXPOSE 5000   # Backend API
+EXPOSE 3000
+EXPOSE 5000
 
 # ---------------------------
 # 5️⃣ Start backend (serves frontend too)
 # ---------------------------
 CMD ["node", "server/index.js"]
-
