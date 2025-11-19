@@ -9,7 +9,13 @@ WORKDIR /app
 COPY client/package*.json ./client/
 RUN cd client && npm install
 
+# Install Vite (fix for "vite: not found")
+RUN cd client && npm install vite
+
+# Copy remaining frontend code
 COPY client ./client
+
+# Build React frontend
 RUN cd client && npm run build
 
 # ---------------------------
