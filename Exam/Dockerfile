@@ -2,7 +2,7 @@ FROM node:18
 
 WORKDIR /app
 
-# Copy backend files
+# Copy backend
 COPY server/package*.json ./server/
 RUN cd server && npm install
 COPY server ./server
@@ -10,5 +10,5 @@ COPY server ./server
 # Expose backend port
 EXPOSE 5000
 
-# Start backend
-CMD ["node", "server/index.js"]
+# Start backend from correct path
+CMD ["node", "server/src/index.js"]
