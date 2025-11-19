@@ -1,34 +1,27 @@
-# ------------------------------------------------------
-# 1️⃣ FRONTEND BUILD STAGE (uses full node image)
-# ------------------------------------------------------
-FROM node:18 AS frontend-build
-WORKDIR /app
-
-COPY client/package*.json ./client/
-RUN cd client && npm install
-
-COPY client ./client
-RUN cd client && npm run build
-
-
-# ------------------------------------------------------
-# 2️⃣ BACKEND BUILD STAGE
-# ------------------------------------------------------
 FROM node:18
+
 WORKDIR /app
 
+# ---------------------------
+# 1️⃣ Copy backend
+# ---------------------------
 COPY server/package*.json ./server/
 RUN cd server && npm install
-
 COPY server ./server
 
-# Copy frontend build → backend/public
+# ---------------------------
+# 2️⃣ Copy pre-built frontend (dist folder)
+# ---------------------------
 RUN mkdir -p server/public
-COPY --from=frontend-build /app/client/build ./server/public/
+COPY client/dist ./server/public/
 
-# Expose ports
-EXPOSE 3000
+# ---------------------------
+# 3️⃣ Expose ports
+# ---------------------------
 EXPOSE 5000
+EXPOSE 3000
 
-# Start backend
+# ---------------------------
+# 4️⃣ Start backend server
+# ---------------------------
 CMD ["node", "server/index.js"]
