@@ -2,11 +2,13 @@ FROM node:18
 
 WORKDIR /app
 
-# Copy backend package files
+# Copy ONLY package.json (NOT node_modules)
 COPY server/package*.json ./server/
+
+# Install backend dependencies (Linux binaries)
 RUN cd server && npm install --build-from-source
 
-# Copy backend source code (NOT node_modules)
+# Copy backend source code (skip node_modules)
 COPY server ./server
 
 EXPOSE 5000
