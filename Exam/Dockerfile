@@ -1,47 +1,34 @@
-FROM node:18-alpine AS build
-
-# Set working directory
+# ------------------------------------------------------
+# 1️⃣ FRONTEND BUILD STAGE (uses full node image)
+# ------------------------------------------------------
+FROM node:18 AS frontend-build
 WORKDIR /app
 
-# Enable devDependencies (required for Vite)
-ENV NODE_ENV=development
-
-# ---------------------------
-# 1️⃣ Install and build frontend (React)
-# ---------------------------
 COPY client/package*.json ./client/
 RUN cd client && npm install
 
-# Install Vite (fix for "vite: not found")
-RUN cd client && npm install vite
-
-# Copy remaining frontend code
 COPY client ./client
-
-# Build React frontend
 RUN cd client && npm run build
 
-# ---------------------------
-# 2️⃣ Install backend (Node.js)
-# ---------------------------
+
+# ------------------------------------------------------
+# 2️⃣ BACKEND BUILD STAGE
+# ------------------------------------------------------
+FROM node:18
+WORKDIR /app
+
 COPY server/package*.json ./server/
 RUN cd server && npm install
 
 COPY server ./server
 
-# ---------------------------
-# 3️⃣ Move frontend build → backend/public
-# ---------------------------
+# Copy frontend build → backend/public
 RUN mkdir -p server/public
-RUN cp -r client/build/* server/public/
+COPY --from=frontend-build /app/client/build ./server/public/
 
-# ---------------------------
-# 4️⃣ Expose both ports
-# ---------------------------
+# Expose ports
 EXPOSE 3000
 EXPOSE 5000
 
-# ---------------------------
-# 5️⃣ Start backend (serves frontend too)
-# ---------------------------
+# Start backend
 CMD ["node", "server/index.js"]
