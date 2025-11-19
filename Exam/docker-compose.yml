@@ -17,8 +17,7 @@ services:
     build: .
     container_name: exam_app_container
     ports:
-      - "3000:3000"   # Frontend exposed port (static)
-      - "5000:5000"   # Backend API port
+      - "5000:5000"   # Backend API
     environment:
       DB_HOST: postgres
       DB_USER: postgres
