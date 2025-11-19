@@ -3,6 +3,9 @@ FROM node:18-alpine AS build
 # Set working directory
 WORKDIR /app
 
+# Enable devDependencies (required for Vite)
+ENV NODE_ENV=development
+
 # ---------------------------
 # 1️⃣ Install and build frontend (React)
 # ---------------------------
