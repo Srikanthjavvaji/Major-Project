@@ -2,13 +2,13 @@ FROM node:18
 
 WORKDIR /app
 
-# Copy backend files
+# Copy backend package files
 COPY server/package*.json ./server/
-RUN cd server && npm install
+RUN cd server && npm install --build-from-source
+
+# Copy backend source code (NOT node_modules)
 COPY server ./server
 
-# Expose backend port
 EXPOSE 5000
 
-# Start backend (correct path)
 CMD ["node", "server/src/index.js"]
