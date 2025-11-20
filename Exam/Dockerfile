@@ -1,8 +1,11 @@
 FROM node:18 AS frontend-build
 WORKDIR /app/client
 
+ENV NODE_ENV=development
+ENV NPM_CONFIG_PRODUCTION=false
+
 COPY client/package*.json ./
-RUN npm install --include=dev
+RUN npm install
 
 COPY client/ ./
 RUN npm run build
@@ -11,8 +14,11 @@ RUN npm run build
 FROM node:18 AS backend
 WORKDIR /app/server
 
+ENV NODE_ENV=development
+ENV NPM_CONFIG_PRODUCTION=false
+
 COPY server/package*.json ./
-RUN npm install --include=dev
+RUN npm install
 RUN npm rebuild bcrypt --build-from-source || npm install bcrypt
 
 COPY server/ ./
