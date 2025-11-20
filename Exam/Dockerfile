@@ -1,11 +1,13 @@
 FROM node:18 AS frontend-build
 WORKDIR /app/client
 
+ENV NODE_ENV=development
+
 COPY client/package*.json ./
 RUN npm install
 
 COPY client/ ./
-RUN npx vite build
+RUN npm run build
 
 FROM node:18 AS backend
 WORKDIR /app/server
