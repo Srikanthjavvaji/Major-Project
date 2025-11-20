@@ -1,26 +1,15 @@
-FROM node:18
+FROM node:18 AS frontend-build
+WORKDIR /app/client
+COPY client/package*.json ./
+RUN npm install
+COPY client/ .
+RUN npm run build
 
-WORKDIR /app
-
-# ----------------------------------
-# 1. Copy backend dependency files
-# ----------------------------------
-COPY server/package*.json ./server/
-
-# Install backend dependencies (Linux-compatible bcrypt)
-RUN cd server && npm install --build-from-source
-
-# ----------------------------------
-# 2. Copy backend application code
-# ----------------------------------
-COPY server ./server
-
-# ----------------------------------
-# 3. Expose backend port
-# ----------------------------------
+FROM node:18 AS backend
+WORKDIR /app/server
+COPY server/package*.json ./
+RUN npm install
+COPY server/ .
+COPY --from=frontend-build /app/client/build ./public
 EXPOSE 5000
-
-# ----------------------------------
-# 4. Start backend server
-# ----------------------------------
-CMD ["node", "server/src/index.js"]
+CMD ["npm", "start"]
