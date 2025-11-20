@@ -17,14 +17,17 @@ services:
     build: .
     container_name: exam_app_container
     ports:
-      - "5000:5000"   # Backend API port
+      - "5000:5000"
     environment:
       DB_HOST: postgres
+      DB_PORT: 5432
       DB_USER: postgres
       DB_PASSWORD: MvrLv@2418
       DB_NAME: examdb
+      DATABASE_URL: postgres://postgres:MvrLv@2418@postgres:5432/examdb
     depends_on:
       - postgres
+    restart: always
 
 volumes:
   pgdata:
