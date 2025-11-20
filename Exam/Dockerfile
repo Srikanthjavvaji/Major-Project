@@ -1,14 +1,11 @@
 FROM node:18 AS frontend-build
-WORKDIR /app/client
+WORKDIR /app/frontend
 
-ENV NODE_ENV=development
-
-COPY client/package*.json ./
+COPY package*.json ./
 RUN npm install
 
-COPY client/ .
-RUN npm install vite -D
-RUN npm run build
+COPY . .
+RUN npx vite build
 
 FROM node:18 AS backend
 WORKDIR /app/server
@@ -18,7 +15,7 @@ RUN npm install
 
 COPY server/ .
 
-COPY --from=frontend-build /app/client/dist ./public
+COPY --from=frontend-build /app/frontend/dist ./public
 
 EXPOSE 5000
 CMD ["npm", "start"]
