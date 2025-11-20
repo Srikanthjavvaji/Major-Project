@@ -5,22 +5,17 @@ COPY client/package*.json ./
 RUN npm install --include=dev
 
 COPY client/ ./
-
-# Force install vite globally (prevents PATH issues)
-RUN npm install -g vite@5
-
-# Run vite build with the global binary
-RUN /usr/local/bin/vite build
+RUN npm run build
 
 
 FROM node:18 AS backend
 WORKDIR /app/server
 
 COPY server/package*.json ./
-RUN npm install
+RUN npm install --include=dev
+RUN npm rebuild bcrypt --build-from-source || npm install bcrypt
 
 COPY server/ ./
-
 COPY --from=frontend-build /app/client/dist ./public
 
 EXPOSE 5000
